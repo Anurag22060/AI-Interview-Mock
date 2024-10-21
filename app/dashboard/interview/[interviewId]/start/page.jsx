@@ -24,7 +24,9 @@ const StartInterview = ({ params }) => {
       .from(MockInterview)
       .where(eq(MockInterview.mockId, params.interviewId));
 
-    const jsonMockResp = JSON.parse(result[0].jsonMockResp);
+      let cleanJsonMockResp = result[0].jsonMockResp.replace(/```/g, '');
+
+    const jsonMockResp = JSON.parse(cleanJsonMockResp);
     // console.log(jsonMockResp);
 
     setMockInterviewQuestion(jsonMockResp);
