@@ -20,7 +20,7 @@ const InterviewList = () => {
     const GetInterviewList=async()=>{
         const result = await db.select().from(MockInterview).where(eq(MockInterview.createdBy,user?.primaryEmailAddress?.emailAddress)).orderBy(desc(MockInterview.id))
 
-        console.log(result);
+        // console.log(result);
         setInterviewList(result);   
         
     }

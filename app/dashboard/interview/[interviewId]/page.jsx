@@ -14,7 +14,7 @@ const Interview = ({ params }) => {
   const [webCamEnabled, setWebCamEnabled] = useState(false);
 
   useEffect(() => {
-    console.log(params.interviewId);
+    // console.log(params.interviewId);
     GetInterviewDetails();
   }, []);
   // Used to get Interview Details by MockId/Interview Id
@@ -60,13 +60,14 @@ const Interview = ({ params }) => {
           )}
         </div>
 
-        <div>
+        <div className="relative">
           {webCamEnabled ? (
             <Webcam
               onUserMedia={() => setWebCamEnabled(true)}
               onUserMediaError={() => setWebCamEnabled(false)}
               mirrored={true}
-              style={{ height: 200, width: 300 }}
+               className="h-72 w-full my-7 bg-secondary rounded-lg border border-gray-300 shadow-lg"
+               style={{ objectFit: "cover" }}
             />
           ) : (
             <>

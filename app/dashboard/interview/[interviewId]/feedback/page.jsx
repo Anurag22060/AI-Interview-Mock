@@ -29,7 +29,7 @@ const Feedback = ({ params }) => {
       .where(eq(UserAnswer.mockIdRef, params.interviewId))
       .orderBy(UserAnswer.id);
 
-    console.log("Fetched Feedback:", result); // Verify the result
+    // console.log("Fetched Feedback:", result); // Verify the result
 
     if (result.length > 0) {
       setFeedbackList(result);
@@ -54,7 +54,7 @@ const Feedback = ({ params }) => {
       <>
       <h2 className="text-3xl font-bold text-green-500">Congratulation!</h2>
       <h2 className="font-bold text-2xl">Here is your interview feedback</h2>
-      
+
       {overallRating && (
         <h2 className="text-primary text-lg my-3">
           Your overall interview rating: <strong>{overallRating}</strong>

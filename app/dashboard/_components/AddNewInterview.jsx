@@ -36,14 +36,15 @@ const AddNewInterview = () => {
     const onSubmit = async(e)=>{
       setLoading(true);
       e.preventDefault(); // Used to stop refreshing the console automatically
-      console.log(jobPosition,jobDesc,jobExperience);
+      // console.log(jobPosition,jobDesc,jobExperience);
+
       // Gemini AI working code 
 
       const InputPrompt = "Job Position: "+jobPosition+", Job Description: "+jobDesc+" , Years of Experience: "+jobExperience+" , Depending on this information please provide me "+process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT+" interview questions with answers in JSON Format, Give Question and Answered as field in JSON"
 
       const result = await chatSession.sendMessage(InputPrompt); // send prompt to AI
       const MockJsonResp = (result.response.text()).replace('```json','').replace('```','');
-      console.log(JSON.parse(MockJsonResp));// send the gather result to console in text format.
+      // console.log(JSON.parse(MockJsonResp));// send the gather result to console in text format.
       setJsonResponse(MockJsonResp);
 
       if(MockJsonResp){
@@ -56,7 +57,8 @@ const AddNewInterview = () => {
         createdBy:user?.primaryEmailAddress?.emailAddress,
         createdAt:moment().format('DD-MM-yyyy')
       }).returning({mockId:MockInterview.mockId});
-      console.log("Inserted ID:",resp);
+      
+      // console.log("Inserted ID:",resp);
       if(resp)
       {
         setOpenDialog(false);
