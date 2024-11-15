@@ -30,13 +30,13 @@ function RecordAnswerSection({mockInterviewQuestion,activeQuestionIndex,intervie
         useLegacyResults: false
       });
       useEffect(()=>{
-        results.map((result)=>(
+        results?.map((result)=>(
             setUserAnswer(prevAns=>prevAns+result?.transcript)
         ))
       },[results])
 
       useEffect(()=>{
-        if(!isRecording && userAnswer.length>10){
+        if(!isRecording && userAnswer?.length>10){
           UpdateUserAnswer();
         }
       },[userAnswer])
@@ -46,11 +46,6 @@ function RecordAnswerSection({mockInterviewQuestion,activeQuestionIndex,intervie
          
           stopSpeechToText();
 
-          // if(userAnswer?.length<10){
-          //   setLoading(false);
-          //   toast('Error while saving your answer, Please record again')
-          //   return;
-          // }
 
         }
         else{
@@ -58,35 +53,72 @@ function RecordAnswerSection({mockInterviewQuestion,activeQuestionIndex,intervie
         }
       }
 
-      const UpdateUserAnswer=async()=>{
-        setLoading(true);
-        // console.log(userAnswer);
+      // const UpdateUserAnswer=async()=>{
+      //   setLoading(true);
+      //   console.log(userAnswer);
         
-        const feedbackPrompt="Question:"+ mockInterviewQuestion[activeQuestionIndex]?.Question + ", User Answer:"+ userAnswer+",Depends on question and user answer for give interview question"+" please give us rating for answer out of 10 and feedback as area of improvement if any "+"in just 3-4 lines to improve it in JSON format with rating field and feedback field";
+      //   const feedbackPrompt="Question:"+ mockInterviewQuestion[activeQuestionIndex]?.Question + ", User Answer:"+ userAnswer+",Depends on question and user answer for give interview question"+" please give us rating for answer out of 10 and feedback as area of improvement if any "+"in just 3-4 lines to improve it in JSON format with rating field and feedback field";
 
-        const result = await chatSession.sendMessage(feedbackPrompt);
-        const mockJsonResp = (result.response.text()).replace('```json','').replace('```','');
-        // console.log(mockJsonResp);
-        const JsonFeedbackResp = JSON.parse(mockJsonResp);
-        const resp= await db.insert(UserAnswer).values({
-          mockIdRef:interviewData?.mockId,
-          question:mockInterviewQuestion[activeQuestionIndex]?.Question, 
-          correctAns:mockInterviewQuestion[activeQuestionIndex]?.Answer,
-          userAns:userAnswer,
-          feedback:JsonFeedbackResp?.feedback,
-          rating:JsonFeedbackResp?.rating,
-          userEmail:user?.primaryEmailAddress?.emailAddress,
-          createdAt:moment().format('DD-MM-yyyy') 
-        })
-        if(resp){
-          toast('User Answer recorded successfully')
+      //   const result = await chatSession.sendMessage(feedbackPrompt);
+      //   const mockJsonResp = (result.response.text()).replace('```json','').replace('```','');
+      //   // console.log(mockJsonResp);
+      //   const JsonFeedbackResp = JSON.parse(mockJsonResp);
+      //   const resp= await db.insert(UserAnswer).values({
+      //     mockIdRef:interviewData?.mockId,
+      //     question:mockInterviewQuestion[activeQuestionIndex]?.Question, 
+      //     correctAns:mockInterviewQuestion[activeQuestionIndex]?.Answer,
+      //     userAns:userAnswer,
+      //     feedback:JsonFeedbackResp?.feedback,
+      //     rating:JsonFeedbackResp?.rating,
+      //     userEmail:user?.primaryEmailAddress?.emailAddress,
+      //     createdAt:moment().format('DD-MM-yyyy') 
+      //   })
+      //   if(resp){
+      //     toast('User Answer recorded successfully')
+      //     setUserAnswer('');
+      //     setResults([]);
+      //   }
+      //   setResults([]);
+      //   setLoading(false);
+      // }
+
+
+      const UpdateUserAnswer = async () => {
+        setLoading(true);
+        console.log(userAnswer);
         
-        setUserAnswer('');
-        setResults([]);
+        const feedbackPrompt = "Question:" + mockInterviewQuestion[activeQuestionIndex]?.Question + ", User Answer:" + userAnswer + ", Depends on question and user answer for give interview question" + " please give us rating for answer out of 10 and feedback as area of improvement if any " + "in just 3-4 lines to improve it in JSON format with rating field and feedback field";
+    
+        try {
+            const result = await chatSession.sendMessage(feedbackPrompt);
+            const mockJsonResp = (result.response.text()).replace('```json', '').replace('```', '');
+            const JsonFeedbackResp = JSON.parse(mockJsonResp);
+    
+            const resp = await db.insert(UserAnswer).values({
+                mockIdRef: interviewData?.mockId,
+                question: mockInterviewQuestion[activeQuestionIndex]?.Question,
+                correctAns: mockInterviewQuestion[activeQuestionIndex]?.Answer,
+                userAns: userAnswer,
+                feedback: JsonFeedbackResp?.feedback,
+                rating: JsonFeedbackResp?.rating,
+                userEmail: user?.primaryEmailAddress?.emailAddress,
+                createdAt: moment().format('DD-MM-yyyy')
+            });
+    
+            if (resp) {
+                toast('User Answer recorded successfully');
+            }
+        } catch (error) {
+            console.error("Error saving user answer:", error);
+            toast('Error recording answer');
+        } finally {
+            
+            setUserAnswer(''); // Clear user answer
+            setResults([]);    // Clear speech recognition results
+            setLoading(false); // Stop the loading state
         }
-        setResults([]);
-        setLoading(false);
-      }
+    }
+    
 
   return (
     

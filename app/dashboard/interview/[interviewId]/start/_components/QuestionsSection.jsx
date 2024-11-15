@@ -26,6 +26,7 @@ function QuestionsSection({ mockInterviewQuestion, activeQuestionIndex }) {
               Question #{index + 1}
             </h2>
           ))}
+          
       </div>
       <h2 className="my-5 text-md md:text-lg">{mockInterviewQuestion[activeQuestionIndex]?.Question}</h2>
           <Volume2 className='cursor-pointer' onClick={()=> textToSpeech(mockInterviewQuestion[activeQuestionIndex]?.Question)} />
